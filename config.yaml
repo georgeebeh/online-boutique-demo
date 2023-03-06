@@ -1,0 +1,344 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emailservice 
+spec:
+  selector:
+    matchLabels:
+      app: emailservice
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: emailservice
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/emailservice:v0.5.2 
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"   
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice
+spec:
+  type: ClusterIP
+  selector:
+    app: emailservice 
+  ports:
+    - protocol: TCP
+      port: 5000 
+      targetPort: 8080 
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendationservice 
+spec:
+  selector:
+    matchLabels:
+      app: recommendationservice
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: recommendationservice
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/recommendationservice:v0.5.2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT 
+          value: "8080" 
+        - name: PRODUCT_CATALOG_SERVICE_ADDR 
+          value: "productcatalogservice:5002"   
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationservice
+spec:
+  type: ClusterIP
+  selector:
+    app: recommendationservice 
+  ports:
+    - protocol: TCP
+      port: 5001 
+      targetPort: 8080 
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productcatalogservice 
+spec:
+  selector:
+    matchLabels:
+      app: productcatalogservice
+  replicas: 3 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: productcatalogservice
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.5.2
+        ports:
+        - containerPort: 3550
+        env:
+        - name: PORT 
+          value: "3550" 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productcatalogservice
+spec:
+  type: ClusterIP
+  selector:
+    app: productcatalogservice 
+  ports:
+    - protocol: TCP
+      port: 5002 
+      targetPort: 3550 
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentservice  
+spec:
+  selector:
+    matchLabels:
+      app: paymentservice 
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: paymentservice 
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/paymentservice:v0.1.5
+        ports:
+        - containerPort: 50051 
+        env:
+        - name: PORT 
+          value: "50051" 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentservice
+spec:
+  type: ClusterIP
+  selector:
+    app: paymentservice  
+  ports:
+    - protocol: TCP
+      port: 5003 
+      targetPort: 50051       
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shippingservice  
+spec:
+  selector:
+    matchLabels:
+      app: shippingservice 
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: shippingservice 
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/shippingservice:v0.5.2
+        ports:
+        - containerPort: 50051 
+        env:
+        - name: PORT 
+          value: "50051" 
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shippingservice 
+spec:
+  type: ClusterIP
+  selector:
+    app: shippingservice  
+  ports:
+    - protocol: TCP
+      port: 5004  
+      targetPort: 50051             
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: currencyservice  
+spec:
+  selector:
+    matchLabels:
+      app: currencyservice 
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: currencyservice 
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/currencyservice:v0.1.5
+        ports:
+        - containerPort: 7000 
+        env:
+        - name: PORT 
+          value: "7000"      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: currencyservice 
+spec:
+  type: ClusterIP
+  selector:
+    app: currencyservice  
+  ports:
+    - protocol: TCP
+      port: 5005  
+      targetPort: 7000    
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adservice 
+spec:
+  selector:
+    matchLabels:
+      app: adservice
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: adservice 
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/adservice:v0.5.2
+        ports:
+        - containerPort: 9555
+        env:
+        - name: PORT 
+          value: "9555" 
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adservice
+spec:
+  type: ClusterIP
+  selector:
+    app: adservice  
+  ports:
+    - protocol: TCP
+      port: 5006 
+      targetPort: 9555    
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice  
+spec:
+  selector:
+    matchLabels:
+      app: checkoutservice 
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: checkoutservice
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/checkoutservice:v0.5.2
+        ports:
+        - containerPort: 5050
+        env:
+        - name: PORT 
+          value: "5050" 
+        - name: PRODUCT_CATALOG_SERVICE_ADDR
+          value: "productcatalogservice:5002" 
+        - name: SHIPPING_SERVICE_ADDR
+          value: "shippingservice:5004" 
+        - name: PAYMENT_SERVICE_ADDR
+          value: "paymentservice:5003" 
+        - name: CART_SERVICE_ADDR
+          value: "cartservice:5008"
+        - name: EMAIL_SERVICE_ADDR
+          value: "emailservice:5000"
+        - name: CURRENCY_SERVICE_ADDR
+          value: "currencyservice:5005"        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkoutservice
+spec:
+  type: ClusterIP
+  selector:
+    app: checkoutservice 
+  ports:
+    - protocol: TCP
+      port: 5007 
+      targetPort: 5050   
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cartservice 
+spec:
+  selector:
+    matchLabels:
+      app: cartservice
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: cartservice
+    spec:
+      containers:
+      - name: service
+        image: gcr.io/google-samples/microservices-demo/cartservice:v0.5.2 
+        ports:
+        - containerPort: 7070
+        env:
+        - name: PORT 
+          value: "7070" 
+        - name: REDIS_ADDR
+          value: "redis-cart:5009"   
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cartservice
+spec:
+  type: ClusterIP
+  selector:
+    app: cartservice 
+  ports:
+    - protocol: TCP
+      port: 5008 
+      targetPort: 7070   
